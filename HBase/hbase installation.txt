@@ -1,0 +1,70 @@
+STEP 01: make sure your system has Hadoop installed and Java JDK installed (earlier 8 version)
+
+STEP 02: Download HBase 2.2.5 version tar file from the website. (https://archive.apache.org/dist/hbase/2.2.5/)
+
+STEP 03: Extract that file in the Local Drive (C). 
+
+STEP 04: Once you extract that file Open it and inside that create 2 new folders that is "hbase" & "zookeeper".
+
+STEP 05: Then inside the "bin" folder you will find a hbase.cmd file open in the notepad.
+
+STEP 06: After that search for "settings" in that file and remove the below word as mentioned below:
+%HEAP_SETTINGS%
+
+STEP 07: After that save that file.
+
+STEP 08: Now open "config" folder in the hbase and open "hbase-env.cmd" file in the notepad.
+
+STEP 09: Then paste the below code in that file after the "@rem set JAVA_HOME=c:\apps\java" line as shown in the video:
+
+set JAVA_HOME=%JAVA_HOME%
+set HBASE_CLASSPATH=%HBASE_HOME%\lib\client-facing-thirdparty\*
+set HBASE_HEAPSIZE=8000
+set HBASE_OPTS="-XX:+UseConcMarkSweepGC" "-Djava.net.preferIPv4Stack=true"
+set SERVER_GC_OPTS="-verbose:gc" "-XX:+PrintGCDetails" "-XX:+PrintGCDateStamps" %HBASE_GC_OPTS%
+set HBASE_USE_GC_LOGFILE=true
+
+set HBASE_JMX_BASE="-Dcom.sun.management.jmxremote.ssl=false" "-Dcom.sun.management.jmxremote.authenticate=false"
+
+set HBASE_MASTER_OPTS=%HBASE_JMX_BASE% "-Dcom.sun.management.jmxremote.port=10101"
+set HBASE_REGIONSERVER_OPTS=%HBASE_JMX_BASE% "-Dcom.sun.management.jmxremote.port=10102"
+set HBASE_THRIFT_OPTS=%HBASE_JMX_BASE% "-Dcom.sun.management.jmxremote.port=10103"
+set HBASE_ZOOKEEPER_OPTS=%HBASE_JMX_BASE% -Dcom.sun.management.jmxremote.port=10104"
+set HBASE_REGIONSERVERS=%HBASE_HOME%\conf\regionservers
+set HBASE_LOG_DIR=%HBASE_HOME%\logs
+set HBASE_IDENT_STRING=%USERNAME%
+set HBASE_MANAGES_ZK=true
+
+STEP 10: After that save that file and close that file, then open an another file from that same "config" folder that is "hbase-site.xml"
+
+STEP 11: Paste the below code in that file and change the path of the folder you have created earlier (hbase, zookeeper) according to your system , then save it and close that file.
+
+<property>
+    <name>hbase.rootdir</name>
+    <value>file:///C:/Documents/hbase-2.2.5/hbase</value>
+ </property>
+ <property>
+    <name>hbase.zookeeper.property.dataDir</name>
+    <value>/C:/Documents/hbase-2.2.5/zookeeper</value>
+ </property>
+ <property>
+     <name> hbase.zookeeper.quorum</name>
+    <value>localhost</value>
+ </property>
+
+STEP 12: Till STEP 11 we have done the setup part for the HBase. Now we run in cmd and check if it is installed properly or not.
+
+STEP 13: Now in CMD, navigate to the bin path of the HBase as shown in the video:
+
+STEP 14: Now write the below command after each command runs:
+
+start-hbase.cmd
+
+hbase version
+
+jps
+
+hbase shell
+
+
+NOTE : In the output of "jps" if you get HMAster then rest assured because you have successfully installed HBase in your system.

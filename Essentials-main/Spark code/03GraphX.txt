@@ -1,0 +1,49 @@
+//graphx//
+
+import org.apache.spark._
+--
+ import org.apache.spark.rdd.RDD
+ --
+ import org.apache.spark.graphx._
+ --
+val vertices = Array((1L,("A")),(2L,("B")),(3L,("C")))
+--
+ val vRDD = sc.parallelize(vertices)
+ --
+  vRDD.take(1)
+--
+vRDD.take(2)
+--
+val edges = Array(Edge(1L,2L,1800),Edge(2L,3L,800),Edge(3L,1L,1400))
+--
+val eRDD = sc.parallelize(edges)
+--
+eRDD.take(2)
+--
+val nowhere = "nowhere"
+--
+val graph = Graph(vRDD,eRDD,nowhere)
+--
+graph.vertices.collect.foreach(println)
+--
+ graph.edges.collect.foreach(println)
+ --
+ val numairports = graph.numVertices
+ --
+val numroutes = graph.numEdges
+--
+(graph.edges.filter{case Edge(src,dst,prop) => prop>1000}.collect.foreach(println))
+--
+graph.triplets.take(3).foreach(println)
+--
+val i = graph.inDegrees
+--
+ i.collect()
+ --
+ val o = graph.outDegrees
+ --
+ o.collect()
+ --
+ val t = graph.degrees
+ --
+  t.collect()

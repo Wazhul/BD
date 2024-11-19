@@ -1,0 +1,80 @@
+**prac2**
+
+//sample data based//
+
+val x = spark.read.json("C:/spark/examples/src/main/resources/people.json");
+
+--
+x.show()
+--
+ x.printSchema()
+--
+ x.select($"name",$"age").show()
+--
+x.filter($"age">20).show()
+--
+val y=spark.read.csv("C:/spark/examples/src/main/resources/people.csv").show()
+--
+x.createOrReplaceTempView("people")
+--
+ val sqlDF=spark.sql("Select *from people")
+--
+sqlDF.show()
+
+
+
+
+//Creating Datasets//
+
+case class Person(name: String, age: Long)
+--
+val caseClassDS = Seq(Person("Andy", 32)).toDS()
+
+--
+caseClassDS.show()
+--
+val primitiveDS = Seq(1, 2, 3).toDS()
+--
+primitiveDS.map(_+1).collect()
+--
+
+ val peopleDS=spark.read.json("C:/spark/examples/src/main/resources/people.json").as[Person]
+--
+ peopleDS.show()
+
+---
+
+
+
+ //Programmatically Specifying the Schema//
+
+---
+
+import org.apache.spark.sql.Row
+Import org.apache.spark.sql.types._
+--
+val peopleRDD=spark.sparkContext.textFile("C:/spark/hadoop/examples/src/main/resources/people.txt")
+--
+ val fields = schemaString.split(" ").map(fieldName => StructField(fieldName, StringType, nullable = true))
+ --
+ val schema = StructType(fields)
+ --
+ val rowRDD = peopleRDD.map(_.split(",")).map(attributes => Row(attributes(0),attributes(1).trim))
+ --
+ val peopleDF = spark.createDataFrame(rowRDD, schema)
+ --
+ peopleDF.createOrReplaceTempView("people")
+ --
+ val results = spark.sql("SELECT name FROM people")
+ --
+  results.map(attributes => "Name: " + attributes(0)).show()
+  --
+   val myData = spark.read.format("csv").option("inferSchema", "true").option("header", "true").option("delimiter", ":").load("C:/spark/examples/src/main/resources/people.csv")
+--
+myData.show()
+--
+myData.select($”name”,”$age”).show()
+--
+myData.count()
+--
+myData.count().toDouble
